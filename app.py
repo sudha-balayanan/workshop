@@ -1,11 +1,21 @@
-from flask import Flask, render_template
+from flask import Flask, redirect, render_template, request, url_for
 
 app = Flask(__name__)
+
+CHOICES = {"star", "game"}
 
 
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.route("/choose")
+def choose():
+    choice = request.args.get("choice", "").strip().lower()
+    if choice not in CHOICES:
+        return render_template("index.html", error=f"Invalid choice: {choice!r}"), 400
+    return redirect(url_for(choice))
 
 
 @app.route("/star")
